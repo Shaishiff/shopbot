@@ -6,7 +6,8 @@ var sentences = {
     "shop",
     "purchase",
     "show me what you (have|got)",
-    "what do you (have|got|offer)"
+    "what do you (have|got|offer)",
+    "show products"
   ],
   user_welcoming_messages: [
     "^Hello",
