@@ -272,7 +272,12 @@ function showUserCartInternal(bot, message) {
     if(typeof userCart === "undefined") {
       bot.reply(message, "Your cart is empty");
     } else {
-      bot.reply(message, "You have " + userCart.products.length + " in your cart");
+      var messageText = "You have " + userCart.products.length + " products in your cart";
+      for (var i = 0; i < userCart.products.length; i++) {
+        var curProd = userCart.products[i];
+        messageText += "\n" + curProd.prod_name + " for $" + curProd.prod_price;
+      }
+      bot.reply(message, messageText);
     }
   });
 }
