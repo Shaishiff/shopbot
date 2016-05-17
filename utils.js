@@ -144,7 +144,7 @@ function buildProductsElements(api_data) {
     curElement.buttons = [{
       type: 'web_url',
       title: 'Shop Online',
-      url: curI.url
+      url: curI.url + curI.name
     },
     {
       type: 'postback',
