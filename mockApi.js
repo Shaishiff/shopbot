@@ -2,207 +2,70 @@
 
 var mockApi = {};
 
-var groups = [{
-	name: "A",
-	teams: [{
-		name: "Albania",
-		flag_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Flag_of_Albania.svg/2000px-Flag_of_Albania.svg.png",
-		games_played: 2,
-		games_won: 2,
-		games_draw: 0,
-		games_lost: 0,
-		points: 3,
-		goals_scored: 8,
-		goals_taken: 2
+var products = [{
+		id: 1,
+		name: "Sports",
+		url: "https://www.amazon.com/soccer-store-soccer-shop/b/ref=sd_allcat_sa_sp_team?ie=UTF8&node=706809011",
+		products: [{
+			id: 1,
+			name: "Basketball",
+			image_url: "http://i618.photobucket.com/albums/tt264/martenfisher/basketball.png",
+			price: 10,
+			url: ""
+		}],
+		image_url: "http://www.lf.k12.de.us/wp-content/uploads/2015/03/Sports.png"
 	},
 	{
-		name: "France",
-		flag_url: "https://upload.wikimedia.org/wikipedia/en/thumb/c/c3/Flag_of_France.svg/1280px-Flag_of_France.svg.png",
-		games_played: 2,
-		games_won: 2,
-		games_draw: 0,
-		games_lost: 0,
-		points: 6,
-		goals_scored: 8,
-		goals_taken: 2
+		id: 2,
+		name: "Toys",
+		url: "https://www.amazon.com/toys/b/ref=nav_shopall_tg?ie=UTF8&node=165793011",
+		products: [{
+			id: 2,
+			name: "Teddy Bear",
+			image_url: "http://www.mariahastingspersonalstylist.com/wp-content/uploads/2013/03/teddy.jpg",
+			price: 35,
+			url: ""
+		},
+		{
+			id: 3,
+			name: "Helicopter",
+			image_url: "http://www.babysavers.com/wp-content/uploads/2012/11/Syma-Blue-Toy-Helicopter.png",
+			price: 120,
+			url: ""
+		}],
+		image_url: "https://www.bluum.com/skin/frontend/bluum/default/gfx/home/products/toys.png"
 	},
 	{
-		name: "Romania",
-		flag_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Flag_of_Romania.svg/2000px-Flag_of_Romania.svg.png",
-		games_played: 2,
-		games_won: 2,
-		games_draw: 0,
-		games_lost: 0,
-		points: 1,
-		goals_scored: 8,
-		goals_taken: 2
-	},
-	{
-		name: "Switzerland",
-		flag_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Flag_of_Switzerland_(Pantone).svg/2000px-Flag_of_Switzerland_(Pantone).svg.png",
-		games_played: 2,
-		games_won: 2,
-		games_draw: 0,
-		games_lost: 0,
-		points: 3,
-		goals_scored: 8,
-		goals_taken: 2
-	}]
-},
-{
-	name: "B",
-	teams: [{
-		name: "England",
-		flag_url: "http://www.freelargeimages.com/wp-content/uploads/2014/11/England_flag-4.jpg",
-		games_played: 2,
-		games_won: 2,
-		games_draw: 0,
-		games_lost: 0,
-		points: 6,
-		goals_scored: 11,
-		goals_taken: 2
-	},
-	{
-		name: "Russia",
-		flag_url: "https://upload.wikimedia.org/wikipedia/commons/d/d4/Flag_of_Russia.png",
-		games_played: 2,
-		games_won: 2,
-		games_draw: 0,
-		games_lost: 0,
-		points: 0,
-		goals_scored: 8,
-		goals_taken: 12
-	},
-	{
-		name: "Slovakia",
-		flag_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Flag_of_Slovakia.svg/2000px-Flag_of_Slovakia.svg.png",
-		games_played: 2,
-		games_won: 2,
-		games_draw: 0,
-		games_lost: 0,
-		points: 2,
-		goals_scored: 8,
-		goals_taken: 2
-	},
-	{
-		name: "Wales",
-		flag_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Flag_of_Wales_2.svg/2000px-Flag_of_Wales_2.svg.png",
-		games_played: 2,
-		games_won: 2,
-		games_draw: 0,
-		games_lost: 0,
-		points: 2,
-		goals_scored: 8,
-		goals_taken: 2
-	}]
+		id: 3,
+		name: "Clothing",
+		url: "https://www.amazon.com/s/ref=sd_allcat_sft_men?ie=UTF8&bbn=10445813011&rh=i%3Afashion-brands%2Cn%3A7141123011%2Cn%3A10445813011%2Cn%3A7147441011",
+		products: [{
+			id: 4,
+			name: "T-Shirt",
+			image_url: "https://upload.wikimedia.org/wikipedia/en/3/31/JoeyFox91_Men's_tshirt.png",
+			price: 10,
+			url: ""
+		},
+		{
+			id: 5,
+			name: "Scarf",
+			image_url: "https://cdn.shopify.com/s/files/1/1038/2082/products/CASSA_SCARF_STONE.png",
+			price: 33,
+			url: ""
+		},
+		{
+			id: 6,
+			name: "Pants",
+			image_url: "http://www.jeans.ch/out/pictures/generated/product/1/310_412_75/sol_brax-pants-men-straight-fit-blue-everest-82-1858-23_f_1.png",
+			price: 22,
+			url: ""
+		}],
+		image_url: "http://2.bp.blogspot.com/-mjMyuwW1wHY/VfG3XAtJAaI/AAAAAAAAEUQ/xof5dIFu00U/s1600/eco-green-organic-clothing.png"
 }];
 
-var games = [{
-	id: 123,
-	status: "Ongoing",
-	location: "Stade de France",
-	location_image_url: "http://assets.regus.com/images/2955/officespace/1_454x340.jpg",
-	time: "10/5/2016 20:00",
-	home_team: {
-		name: "England",
-		flag_url: "http://www.freelargeimages.com/wp-content/uploads/2014/11/England_flag-4.jpg",
-		goals: [{
-			player_name: "Wayne Rooney",
-			time: 23,
-			notes: "Header"
-		}, {
-			player_name: "Wayne Rooney",
-			time: 89,
-			notes: "Penalty"
-		}]
-	},
-	away_team: {
-		name: "Russia",
-		flag_url: "https://upload.wikimedia.org/wikipedia/commons/d/d4/Flag_of_Russia.png",
-		goals: [{
-			team: "Russia",
-			player_name: "Maksim Kanunnikov",
-			time: 33,
-			notes: ""
-		}]
-	}
-},
-{
-	id: 124,
-	status: "Prematch",
-	location: "Stade de France",
-	location_image_url: "http://assets.regus.com/images/2955/officespace/1_454x340.jpg",
-	time: "11/5/2016 20:00",
-	home_team: {
-		name: "England",
-		flag_url: "http://www.freelargeimages.com/wp-content/uploads/2014/11/England_flag-4.jpg",
-		goals: []
-	},
-	away_team: {
-		name: "Russia",
-		flag_url: "https://upload.wikimedia.org/wikipedia/commons/d/d4/Flag_of_Russia.png",
-		goals: []
-	}
-},
-{
-	id: 125,
-	status: "Over",
-	location: "Stade de France",
-	location_image_url: "http://assets.regus.com/images/2955/officespace/1_454x340.jpg",
-	time: "09/5/2016 20:00",
-	home_team: {
-		name: "England",
-		flag_url: "http://www.freelargeimages.com/wp-content/uploads/2014/11/England_flag-4.jpg",
-		goals: [{
-			player_name: "Wayne Rooney",
-			time: 23,
-			notes: "Header"
-		}, {
-			player_name: "Wayne Rooney",
-			time: 89,
-			notes: "Penalty"
-		}]
-	},
-	away_team: {
-		name: "Russia",
-		flag_url: "https://upload.wikimedia.org/wikipedia/commons/d/d4/Flag_of_Russia.png",
-		goals: [{
-			team: "Russia",
-			player_name: "Maksim Kanunnikov",
-			time: 33,
-			notes: ""
-		}]
-	}
-}];
-
-mockApi.getGroups = function(callback) {
+mockApi.getProducts = function(callback) {
 	if(typeof callback !== "function") return;
-	callback(groups);
-}
-
-mockApi.getGroupOfTeam = function(callback, team) {
-	if(typeof callback !== "function") return;
-	callback(groups);
-}
-
-mockApi.getGames = function(callback) {
-	if(typeof callback !== "function") return;
-	callback(games);
-}
-
-mockApi.getGamesOfTeam = function(callback, team) {
-	if(typeof callback !== "function") return;
-	callback(games);
-}
-
-mockApi.getLiveGames = function(callback) {
-	if(typeof callback !== "function") return;
-	callback(games);
-}
-
-mockApi.getGamesByDate = function(callback, date) {
-	if(typeof callback !== "function") return;
-	callback(games);
+	callback(products);
 }
 
 module.exports = mockApi;

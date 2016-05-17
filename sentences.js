@@ -1,7 +1,11 @@
 
 var sentences = {
   page_welcome_msg: "Hey !\n Welcome to my shop !\nFeel free to look around :)\nDo you want me to show you what we have in stock ?",
-  help_message: "",
+  user_wants_to_buy: [
+    "buy",
+    "shop",
+    "purchase"
+  ],
   user_welcoming_messages: [
     "^Hello",
     "^Hi",

@@ -37,9 +37,7 @@ controller.middleware.receive.use(function(bot, message, next) {
       message.fullNameWithId = message.user;
     }
     Utils.sendUserMsgToAnalytics(message.fullNameWithId, message.text);
-    //Utils.addInfoFromNLP(message, function(message) {
-      next();
-    //});
+    next();
   });
 });
 
@@ -72,28 +70,22 @@ controller.hears(Sentences.user_says_thanks, 'message_received', function(bot, m
   bot.reply(message, Utils.randomFromArray(Sentences.bot_says_you_are_welcome));
 });
 
+// User wants to buy.
+controller.hears(Sentences.user_wants_to_buy, 'message_received', function(bot, message) {
+  Utils.showCategoriesToUser(bot, message);
+});
+
 // Not suer what the users wants. Final fallback.
 controller.on('message_received', function(bot, message) {
-  console.log("Reached unknown user message");
-  var matchedIntent = Utils.findSuitableIntent(message);
-  if (matchedIntent) {
-    console.log("Found intent: " + matchedIntent);
-    bot.reply(message, "Did you mean " + matchedIntent + " ?");
-  } else {
-    notSureWhatUserWants(bot, message);
-  }
+  Utils.notSureWhatUserWants(bot, message);
   return false;
 });
 
-function notSureWhatUserWants(bot, message) {
-  console.log("No idea what the user wants...");
-  bot.reply(message, Utils.randomFromArray(Sentences.bot_not_sure_what_user_means));
-  Utils.sendUserMsgToAnalytics("unknown_msgs", message.text);
-}
-
 // Facebook postsbacks.
 controller.on('facebook_postback', function(bot, message) {
-  Utils.sendToAnalytics(message.user, "facebook_postback-" + message.payload, "incoming");
-  if (message.payload.indexOf('XXX') === 0) {
+  Utils.sendUserMsgToAnalytics(message.user, "facebook_postback-" + message.payload);
+  if (message.payload.indexOf('show_prods_for_') === 0) {
+    var category_id = message.payload.replace("show_prods_for_","");
+    Utils.showProductsToUser(bot, message, category_id);
   }
 });

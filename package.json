@@ -1,5 +1,5 @@
 {
-  "name": "beepboopfirstbot",
+  "name": "ShaisPlaceBot",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
@@ -7,14 +7,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Shaishiff/beepboopfirstbot.git"
+    "url": "git+https://github.com/Shaishiff/shopbot.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Shaishiff/beepboopfirstbot/issues"
+    "url": "https://github.com/Shaishiff/shopbot/issues"
   },
-  "homepage": "https://github.com/Shaishiff/beepboopfirstbot#readme",
+  "homepage": "https://github.com/Shaishiff/shopbot#readme",
   "description": "",
   "dependencies": {
     "botkit": "^0.1.1",

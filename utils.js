@@ -32,7 +32,7 @@ function getUserInfoFromMongo(userId, callback) {
       db.close();
       if (docs instanceof Array && docs.length == 1) {
         console.log("Found the user in the mongo: " + docs[0]);
-        callback(docs[0]);  
+        callback(docs[0]);
       } else {
         callback();
       }
@@ -88,206 +88,64 @@ function sendWelcomeMessage() {
   });
 }
 
-function rpadwithspace(string, length) {
-  var str = string;
-  while (str.length < length)
-    str = str + " ";
-  return str;
-}
-
-function lpadwithspace(string, length) {
-  var str = string;
-  while (str.length < length)
-    str = " " + str;
-  return str;
-}
-
-function sortTeamsByPoints(teams) {
-  return teams.sort(function(a, b) {
-    return (a.points > b.points) ? -1 : ((b.points > a.points) ? 1 : 0);
-  });
-}
-
-function buildGroupsText(groups) {
-  var TEAM_NAME_PADDING = 20;
-  var text_array = [];
-  if (groups instanceof Array) {
-    for (var iGroup = 0; iGroup < groups.length; iGroup++) {
-      var text = "";
-      var curGroup = groups[iGroup];
-      if (curGroup.teams instanceof Array) {
-        var teams = sortTeamsByPoints(curGroup.teams);
-        text += rpadwithspace("Group " + curGroup.name, TEAM_NAME_PADDING);
-        text += " P  W  D  L  F  A  +/-  Pts\n";
-        //text += "----------------------------------------------------\n";
-        for (var iTeam = 0; iTeam < teams.length; iTeam++) {
-          var curTeam = teams[iTeam];
-          text += rpadwithspace(curTeam.name, TEAM_NAME_PADDING);
-          text += lpadwithspace("" + curTeam.games_played, 2);
-          text += lpadwithspace("" + curTeam.games_won, 3);
-          text += lpadwithspace("" + curTeam.games_draw, 3);
-          text += lpadwithspace("" + curTeam.games_lost, 3);
-          text += lpadwithspace("" + curTeam.goals_scored, 3);
-          text += lpadwithspace("" + curTeam.goals_taken, 3);
-          text += lpadwithspace("" + (curTeam.goals_scored - curTeam.goals_taken), 4);
-          text += lpadwithspace("" + curTeam.points, 5);
-          text += "\n";
-        }
-        //text += "----------------------------------------------------\n";
-        text_array[iGroup] = text;
-      }
-    }
+function getProductArrayByCategoryId(api_data, category_id) {
+  for (var i = 0; i < api_data.length; i++) {
+    var curI = api_data[i];
+    if(curI.id === category_id) return curI.products;
   }
-  return text_array;
+  return null;
 }
 
-function buildGroupsObj(groups) {
-  var allElements = [];
-  if (groups instanceof Array) {
-    for (var iGroup = 0; iGroup < groups.length; iGroup++) {
-      var curGroup = groups[iGroup];
-      if (curGroup.teams instanceof Array) {
-        var elements = [];
-        var teams = sortTeamsByPoints(curGroup.teams);
-        for (var iTeam = 0; iTeam < teams.length; iTeam++) {
-          var curElement = {};
-          var curTeam = teams[iTeam];
-          curElement.title = curGroup.name + (iTeam + 1) + " " + curTeam.name;
-          curElement.image_url = curTeam.flag_url;
-          curElement.subtitle = "Pts: " + curTeam.points + ", Plyd: " + curTeam.games_played + ", W:" + curTeam.games_won + ", D:" + curTeam.games_draw + ", L:" + curTeam.games_lost + ", GlsF:" + curTeam.goals_scored + ", GlsA:" + curTeam.goals_taken + ", Gls(+/-): " + (curTeam.goals_scored - curTeam.goals_taken);
-          curElement.buttons = [{
-            type: 'postback',
-            title: 'Show Teams Games',
-            payload: 'show_games_for_' + curTeam.name
-          }];
-          elements[iTeam] = curElement;
-        }
-      }
-      allElements[iGroup] = elements;
-    }
+function getProductArrayByCategoryName(api_data, category_name) {
+  for (var i = 0; i < api_data.length; i++) {
+    var curI = api_data[i];
+    if(curI.name === category_name) return curI.products;
   }
-  return allElements;
+  return null;
 }
 
-function buildGameTeamObj(team, game) {
-  var teamObj = {};
-  teamObj.title = team.name + (game.status !== "Prematch" ? " (" + team.goals.length + ")" : "");
-  teamObj.image_url = team.flag_url;
-  teamObj.subtitle = "";
-  if (team.goals instanceof Array) {
-    for (var iGoal = 0; iGoal < team.goals.length; iGoal++) {
-      var curGoal = team.goals[iGoal];
-      if (iGoal > 0) teamObj.subtitle += ", ";
-      teamObj.subtitle += curGoal.time + " " + curGoal.player_name + (curGoal.notes && curGoal.notes.length > 0 ? " (" + curGoal.notes + ")" : "");
-    }
-  }
-  teamObj.buttons = [];
-  if (game.status !== "Over") {
-    teamObj.buttons.push({
-      'type': 'web_url',
-      'title': 'Bet on ' + team.name,
-      'url': 'http://sports.winner.com/en/t/30901/Euro-2016-Matches'
-    });
-  }
-  teamObj.buttons.push({
-    'type': 'postback',
-    'title': 'Set notifications',
-    'payload': 'set_notifications_for_team_' + team.name
-  });
-  return teamObj;
-}
-
-function buildGameVsObj(game) {
-  var vsObj = {};
-  vsObj.title = game.status;
-  if (game.status === "Over") {
-    vsObj.title += " - ";
-    if (game.home_team.goals.length > game.away_team.goals.length) {
-      vsObj.title += game.home_team.name + " won";
-    } else if (game.home_team.goals.length < game.away_team.goals.length) {
-      vsObj.title += game.away_team.name + " won";
-    } else {
-      vsObj.title += " Draw";
-    }
-  }
-  if (game.status === "Prematch") {
-    vsObj.subtitle = "Game will start ";
-  } else {
-    vsObj.subtitle = "Game started ";
-  }
-  vsObj.subtitle += game.time + " at " + game.location;
-  vsObj.image_url = game.location_image_url;
-  if (game.status !== "Over") {
-    vsObj.buttons = [{
-      'type': 'web_url',
-      'title': 'Bet on this game',
-      'url': 'http://sports.winner.com/en/t/30901/Euro-2016-Matches'
-    }, {
-      'type': 'postback',
-      'title': 'Set notifications',
-      'payload': 'set_notifications_for_game_' + game.id
-    }];
-  }
-  return vsObj;
-}
-
-function buildGamesObj(games) {
-  var allElements = [];
-  if (games instanceof Array) {
-    for (var iGame = 0; iGame < games.length; iGame++) {
-      var curGame = games[iGame];
-      var elements = [];
-      elements[0] = buildGameTeamObj(curGame.home_team, curGame);
-      elements[1] = buildGameVsObj(curGame);
-      elements[2] = buildGameTeamObj(curGame.away_team, curGame);
-      allElements[iGame] = elements;
-    }
-  }
-  return allElements;
-}
-
-function showGroupsToUserAsText(bot, message) {
-  Api.getGroups(function(groups) {
-    var text_array = buildGroupsText(groups);
-    if (text_array instanceof Array) {
-      for (var iText = 0; iText < text_array.length; iText++) {
-        var curText = text_array[iText];
-        console.log(curText);
-        //var textToSend = (typeof curText === "string" && curText.length > 0) ? curText : 'Not sure about the groups now...sorry :(';
-        bot.reply(message, curText);
-      }
-    }
-  });
-}
-
-/*
-function showSpecificGroupToUserInternal(bot, message, groups, groupIndex) {
-  if (typeof groupIndex !== "number") groupIndex = 0;
-  if (groupIndex >= groups.length) return;
-  console.log("Showing group index " + groupIndex);
-  bot.reply(message, {
-      attachment: {
-        type: 'template';
-        payload: {
-          template_type: 'generic',
-          elements: groups[groupIndex]
-        }
-      }
+function buildCategoriesElements(api_data) {
+  var elements = [];
+  for (var i = 0; i < api_data.length; i++) {
+    var curI = api_data[i];
+    curElement.title = curI.name;
+    curElement.image_url = curI.image_url;
+    curElement.subtitle = "" + curI.products.length + " products";
+    curElement.buttons = [{
+      type: 'web_url',
+      title: 'Shop Online',
+      url: curI.url
     },
-    function() {
-      var newGroupIndex = groupIndex + 1;
-      showSpecificGroupToUserInternal(bot, message, groups, newGroupIndex);
-    });
+    {
+      type: 'postback',
+      title: 'Show Products',
+      payload: 'show_prods_for_' + curI.id
+    }];
+    elements[i] = curElement;
+  }
+  return elements;
 }
-*/
 
-function showGroupsToUserInternal(bot, message, getterParams) {
-  Api.getGroups(function(groups) {
-    var obj_array = buildGroupsObj(groups);
-    if (obj_array instanceof Array && obj_array.length > 0) {
-      sendMultipleAttachmentsOneByOne(bot, message, obj_array);
-    }
-  }, getterParams);
+function buildProductsElements(api_data) {
+  var elements = [];
+  for (var i = 0; i < api_data.length; i++) {
+    var curI = api_data[i];
+    curElement.title = curI.name;
+    curElement.image_url = curI.image_url;
+    curElement.subtitle = "$" + curI.price;
+    curElement.buttons = [{
+      type: 'web_url',
+      title: 'Shop Online',
+      url: curI.url
+    },
+    {
+      type: 'postback',
+      title: 'Add To Cart',
+      payload: 'add_prod_to_cart' + curI.id
+    }];
+    elements[i] = curElement;
+  }
+  return elements;
 }
 
 function sendMultipleAttachmentsOneByOne(bot, message, arr, index) {
@@ -307,39 +165,6 @@ function sendMultipleAttachmentsOneByOne(bot, message, arr, index) {
       var newIndex = index + 1;
       sendMultipleAttachmentsOneByOne(bot, message, arr, newIndex);
     });
-}
-
-function showGamesToUserInternal(bot, message, getter, getterParams) {
-  console.log("showGamesToUserInternal started");
-  getter(function(games) {
-    console.log("showGamesToUserInternal getter callback");
-    var obj_array = buildGamesObj(games);
-    if (obj_array instanceof Array) {
-      sendMultipleAttachmentsOneByOne(bot, message, obj_array);
-      /*
-      for (var iObj = 0; iObj < obj_array.length; iObj++) {
-        var curObj = obj_array[iObj];
-        var attachment = {};
-        attachment.type = 'template';
-        attachment.payload = {
-          template_type: 'generic',
-          elements: curObj
-        };
-        (function() {
-          var timeout = 2000 * iObj;
-          var msgAttachment = attachment;
-          setTimeout(function() {
-            bot.reply(message, {
-              attachment: msgAttachment
-            });
-          }, timeout);
-        }());
-      }
-      */
-    } else {
-      bot.reply(message, "Sorry no such games...");
-    }
-  }, getterParams);
 }
 
 function httpGetJson(url, callback) {
@@ -365,30 +190,6 @@ function httpGetJson(url, callback) {
   });
 }
 
-function findSuitableIntentInternal(message) {
-  if (message && message.nlp && message.nlp.intents && message.nlp.intents.length > 0) {
-    console.log("Found " + message.nlp.intents.length + " possible intents");
-    var sortedIntents = message.nlp.intents.sort(function(a, b) {
-      return (a.score > b.score) ? -1 : ((b.score > a.score) ? 1 : 0);
-    });
-    if ((sortedIntents[0].score > Consts.LUIS_MIN_SCORE) && (sortedIntents[0].intent !== "None")) {
-      return sortedIntents[0].intent;
-    } else {
-      console.log("Score for intent " + sortedIntents[0].intent + " was too low: " + sortedIntents[0].score);
-    }
-  } else {
-    console.log("No NLP data available so cant find intent");
-  }
-  return null;
-}
-
-function queryLuisNLP(message, callback) {
-  httpGetJson(Consts.LUIS_NLP_API + message.text, function(jsonResponse) {
-    message.nlp = jsonResponse;
-    callback(message);
-  });
-}
-
 function getUserInfoInternal(userId, callback) {
   getUserInfoFromMongo(userId, function(userInfo) {
     if (typeof userInfo !== "undefined") {
@@ -404,6 +205,12 @@ function getUserInfoInternal(userId, callback) {
   });
 }
 
+function notSureWhatUserWantsInternal(bot, message) {
+  console.log("No idea what the user wants...");
+  bot.reply(message, Utils.randomFromArray(Sentences.bot_not_sure_what_user_means));
+  Utils.sendUserMsgToAnalytics("unknown_msgs", message.text);
+}
+
 var utils = {
   setWelcomeMessage: function() {
     sendWelcomeMessage();
@@ -417,27 +224,25 @@ var utils = {
   sendBotMsgToAnalytics: function(sender, text) {
     sendToAnalyticsInternal(sender, text, "outgoing");
   },
-  sendToAnalytics: function(sender, text, direction) {
-    sendToAnalyticsInternal(sender, text, direction);
+  showCategoriesToUser: function(bot, message) {
+    Api.getProducts(function(data) {
+      sendMultipleAttachmentsOneByOne(bot,
+        message,
+        [buildCategoriesElements(data)]);
+    });
   },
-  addInfoFromNLP: function(message, callback) {
-    if (message.text && message.text.length > 0) {
-      queryLuisNLP(message, callback);
-    } else {
-      callback(message);
-    }
-  },
-  showGroupsToUser: function(bot, message) {
-    showGroupsToUserInternal(bot, message);
-  },
-  showGamesToUser: function(bot, message, getter, getterParams) {
-    showGamesToUserInternal(bot, message, getter, getterParams);
+  showProductsToUser: function(bot, message, category_id) {
+    Api.getProducts(function(data) {
+      sendMultipleAttachmentsOneByOne(bot,
+        message,
+        [buildProductsElements(getProductArrayByCategoryId(data))]);
+    });
   },
   getUserInfo: function(userId, callback) {
     getUserInfoInternal(userId, callback);
   },
-  findSuitableIntent: function(message) {
-    return findSuitableIntentInternal(message);
+  notSureWhatUserWants: function(bot, message) {
+    notSureWhatUserWantsInternal(bot, message);
   }
 }
 
