@@ -207,8 +207,12 @@ function getUserInfoInternal(userId, callback) {
 
 function notSureWhatUserWantsInternal(bot, message) {
   console.log("No idea what the user wants...");
-  bot.reply(message, Utils.randomFromArray(Sentences.bot_not_sure_what_user_means));
+  bot.reply(message, randomFromArrayInternal(Sentences.bot_not_sure_what_user_means));
   sendToAnalyticsInternal("unknown_msgs", message.text, "incoming");
+}
+
+function randomFromArrayInternal(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
 var utils = {
@@ -216,7 +220,7 @@ var utils = {
     sendWelcomeMessage();
   },
   randomFromArray: function(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
+    return randomFromArrayInternal(arr);
   },
   sendUserMsgToAnalytics: function(sender, text) {
     sendToAnalyticsInternal(sender, text, "incoming");
