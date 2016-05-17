@@ -105,7 +105,7 @@ controller.on('facebook_postback', function(bot, message) {
     var prod_name = add_to_cart.split("@")[1];
     var prod_price = add_to_cart.split("@")[2];
     Utils.addToUserCart(message.user, prod_id, prod_name, prod_price, function(){
-      bot.reply(message, prod_name + " was added to your cart.\nYou can write:\n\"Show cart\" - to see what you currently have in your cart.\n\"Clear cart\" - to clear it.");
+      bot.reply(message, prod_name + " added to your cart.\nYou can write:\n\"Show cart\" - to see what you currently have in your cart.\n\"Clear cart\" - to clear it.");
     });
   }
 });
