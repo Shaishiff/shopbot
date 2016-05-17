@@ -91,7 +91,8 @@ function sendWelcomeMessage() {
 function getProductArrayByCategoryId(api_data, category_id) {
   for (var i = 0; i < api_data.length; i++) {
     var curI = api_data[i];
-    if(curI.id === category_id) {
+    console.log("getProductArrayByCategoryId: trying to match: " + curI.id + " to " + category_id);
+    if(curI.id == category_id) {
       console.log("getProductArrayByCategoryId: Found category " + category_id);
       return curI.products;
     }
