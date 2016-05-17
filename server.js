@@ -75,6 +75,16 @@ controller.hears(Sentences.user_wants_to_buy, 'message_received', function(bot, 
   Utils.showCategoriesToUser(bot, message);
 });
 
+// User wants to show cart.
+controller.hears(["show cart"], 'message_received', function(bot, message) {
+  Utils.showUserCart(bot, message);
+});
+
+// User wants to clear cart.
+controller.hears(["clear cart"], 'message_received', function(bot, message) {
+  Utils.clearUserCart(bot, message);
+});
+
 // Not suer what the users wants. Final fallback.
 controller.on('message_received', function(bot, message) {
   Utils.notSureWhatUserWants(bot, message);
@@ -88,5 +98,14 @@ controller.on('facebook_postback', function(bot, message) {
     var category_id = message.payload.replace("show_prods_for_","");
     console.log("Post back for showing products for category " + category_id);
     Utils.showProductsToUser(bot, message, category_id);
+  } else if (message.payload.indexOf('add_prod_to_cart_') === 0) {
+    var add_to_cart = message.payload.replace("add_prod_to_cart_","");
+    console.log("Post back for add to cart " + add_to_cart);
+    var prod_id = add_to_cart.split("@")[0];
+    var prod_name = add_to_cart.split("@")[1];
+    var prod_price = add_to_cart.split("@")[2];
+    Utils.addToUserCart(message.user, prod_id, prod_name, prod_price, function(){
+      bot.reply(message, prod_name + " was added to your cart.\nWrite: \"Show cart\" to see what you currently have in your cart.\nWrite: \"Clear cart\" to clear it.");
+    });
   }
 });

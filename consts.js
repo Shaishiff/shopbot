@@ -11,7 +11,8 @@ var consts = {
 	LUIS_MIN_SCORE: 0.6,
 	MONGODB_NAME: MONGODB_NAME,
 	MONGODB_URL: "mongodb://" + process.env.MONGO_DB_USER + ":" + process.env.MONGO_DB_USER + "@ds023442.mlab.com:23442/" + MONGODB_NAME,
-	MONGODB_USER_INFO_COL: "user_info"
+	MONGODB_USER_INFO_COL: "user_info",
+	MONGODB_USER_CART_COL: "user_cart"
 };
 
 module.exports = consts;

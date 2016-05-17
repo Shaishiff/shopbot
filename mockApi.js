@@ -21,7 +21,7 @@ var products = [{
 		url: "https://www.amazon.com/toys/b/ref=nav_shopall_tg?ie=UTF8&node=165793011",
 		products: [{
 			id: 2,
-			name: "Teddy Bear",
+			name: "Teddy",
 			image_url: "http://www.mariahastingspersonalstylist.com/wp-content/uploads/2013/03/teddy.jpg",
 			price: 35,
 			url: "https://www.google.co.il/#q="

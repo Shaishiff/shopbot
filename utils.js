@@ -7,11 +7,11 @@ var Api = require('./mockApi');
 var MongoClient = require('mongodb').MongoClient;
 var DateFormat = require('dateformat');
 
-function insertUserInfoToMongo(userInfo, callback) {
+function insertUserInfoToMongo(userInfo, collection_name, callback) {
   console.log("insertUserInfoToMongo: " + Consts.MONGODB_URL);
   MongoClient.connect(Consts.MONGODB_URL, function(err, db) {
     console.log("Connected correctly to server: " + err);
-    var col = db.collection(Consts.MONGODB_USER_INFO_COL);
+    var col = db.collection(collection_name);
     console.log("found the collection");
     col.insertOne(userInfo, function(err, r) {
       console.log("insert complete: " + err);
@@ -22,11 +22,11 @@ function insertUserInfoToMongo(userInfo, callback) {
   });
 }
 
-function getUserInfoFromMongo(userId, callback) {
+function getUserInfoFromMongo(userId, collection_name, callback) {
   console.log("getUserInfoFromMongo");
   MongoClient.connect(Consts.MONGODB_URL, function(err, db) {
     console.log("Connected correctly to server: " + err);
-    var col = db.collection(Consts.MONGODB_USER_INFO_COL);
+    var col = db.collection(collection_name);
     console.log("found the collection: " + err);
     col.find({user_id : userId}).limit(1).toArray(function(err, docs) {
       db.close();
@@ -36,6 +36,20 @@ function getUserInfoFromMongo(userId, callback) {
       } else {
         callback();
       }
+    });
+  });
+}
+
+function removeUserInfoFromMongo(userId, collection_name, callback) {
+  console.log("removeUserInfoFromMongo");
+  MongoClient.connect(Consts.MONGODB_URL, function(err, db) {
+    console.log("Connected correctly to server: " + err);
+    var col = db.collection(collection_name);
+    console.log("found the collection: " + err);
+    col.remove({user_id: userId}, {w:1}, function(err, numberOfRemovedDocs) {
+      console.log("numberOfRemovedDocs: " + numberOfRemovedDocs);
+      db.close();
+      callback();
     });
   });
 }
@@ -149,7 +163,7 @@ function buildProductsElements(api_data) {
     {
       type: 'postback',
       title: 'Add To Cart',
-      payload: 'add_prod_to_cart' + curI.id
+      payload: 'add_prod_to_cart_' + curI.id + '@' + curI.name + '@' + curI.price
     }];
     elements[i] = curElement;
   }
@@ -198,8 +212,38 @@ function httpGetJson(url, callback) {
   });
 }
 
+function getUserCartInternal(userId, callback) {
+  getUserInfoFromMongo(userId, Consts.MONGODB_USER_CART_COL, function(userCart) {
+    if (typeof userCart !== "undefined") {
+      console.log("Got the user cart from mongoDB");
+    }
+    callback(userCart);
+  });
+}
+
+function addToUserCartInternal(userId, prod_id, prod_name, prod_price, callback) {
+  getUserInfoFromMongo(userId, Consts.MONGODB_USER_CART_COL, function(userCart) {
+    if (typeof userCart === "undefined") {
+      userCart = {
+        user_id: userId,
+        products: []
+      };
+    }
+    userCart.products.push({
+      prod_id: prod_id,
+      prod_name: prod_name,
+      prod_price: prod_price
+    });
+    removeUserInfoFromMongo(message.user, Consts.MONGODB_USER_CART_COL, function() {
+      insertUserInfoToMongo(message.user, Consts.MONGODB_USER_INFO_COL, function() {
+        callback(userCart)
+      });
+    });
+  });
+}
+
 function getUserInfoInternal(userId, callback) {
-  getUserInfoFromMongo(userId, function(userInfo) {
+  getUserInfoFromMongo(userId, Consts.MONGODB_USER_INFO_COL, function(userInfo) {
     if (typeof userInfo !== "undefined") {
       console.log("Got the user info from mongoDB");
       callback(userInfo);
@@ -207,7 +251,7 @@ function getUserInfoInternal(userId, callback) {
       console.log("Can't find the user info in the mongoDB");
       httpGetJson(Consts.FACEBOOK_USER_PROFILE_API.replace("<USER_ID>", userId), function(userInfo) {
         userInfo.user_id = userId;
-        insertUserInfoToMongo(userInfo, callback);
+        insertUserInfoToMongo(userInfo, Consts.MONGODB_USER_INFO_COL, callback);
       });
     }
   });
@@ -221,6 +265,22 @@ function notSureWhatUserWantsInternal(bot, message) {
 
 function randomFromArrayInternal(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function showUserCartInternal(bot, message) {
+  getUserCartInternal(message.user, function(userCart) {
+    if(typeof userCart === "undefined") {
+      bot.reply(message, "Your cart is empty");
+    } else {
+      bot.reply(message, "You have " + userCart.products.length + " in your cart");
+    }
+  });
+}
+
+function clearUserCartInternal(bot, message) {
+  removeUserInfoFromMongo(message.user, Consts.MONGODB_USER_CART_COL, function() {
+    bot.reply(message, "Your cart is not empty");
+  });
 }
 
 var utils = {
@@ -255,6 +315,18 @@ var utils = {
   },
   notSureWhatUserWants: function(bot, message) {
     notSureWhatUserWantsInternal(bot, message);
+  },
+  getUserCart: function(userId, callback) {
+    getUserCartInternal(userId, callback);
+  },
+  addToUserCart: function(userId, prod_id, prod_name, prod_price, callback) {
+    addToUserCartInternal(userId, prod_id, prod_name, prod_price, callback);
+  },
+  showUserCart: function(bot, message) {
+    showUserCartInternal(bot, message);
+  },
+  clearUserCart: function(bot, message) {
+    clearUserCartInternal(bot, message);
   }
 }
 
