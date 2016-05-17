@@ -50,7 +50,7 @@ controller.middleware.send.use(function(bot, message, next) {
     } else {
       message.fullNameWithId = message.channel;
     }
-    Utils.sendBotMsgToAnalytics(message.fullNameWithId, message.text || "-empty-");
+    Utils.sendBotMsgToAnalytics(message.fullNameWithId, message.text || "-attachment-");
     next();
   });
 });
