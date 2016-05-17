@@ -86,6 +86,7 @@ controller.on('facebook_postback', function(bot, message) {
   Utils.sendUserMsgToAnalytics(message.user, "facebook_postback-" + message.payload);
   if (message.payload.indexOf('show_prods_for_') === 0) {
     var category_id = message.payload.replace("show_prods_for_","");
+    console.log("Post back for showing products for category " + category_id);
     Utils.showProductsToUser(bot, message, category_id);
   }
 });

@@ -91,8 +91,12 @@ function sendWelcomeMessage() {
 function getProductArrayByCategoryId(api_data, category_id) {
   for (var i = 0; i < api_data.length; i++) {
     var curI = api_data[i];
-    if(curI.id === category_id) return curI.products;
+    if(curI.id === category_id) {
+      console.log("getProductArrayByCategoryId: Found category " + category_id);
+      return curI.products;
+    }
   }
+  console.log("getProductArrayByCategoryId: Could not find category " + category_id);
   return null;
 }
 
@@ -101,6 +105,7 @@ function getProductArrayByCategoryName(api_data, category_name) {
     var curI = api_data[i];
     if(curI.name === category_name) return curI.products;
   }
+  console.log("getProductArrayByCategoryName: Could not find category " + category_name);
   return null;
 }
 
