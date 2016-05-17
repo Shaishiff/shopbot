@@ -1,6 +1,6 @@
 
 var sentences = {
-  page_welcome_msg: "Hey !\nWelcome to my shop !\nFeel free to look around :)",
+  page_welcome_msg: "Hey !\nWelcome to my shop !\nFeel free to look around :)\nJust tell me:\"Let's shop\" when you want to get started",
   user_wants_to_buy: [
     "buy",
     "shop",
