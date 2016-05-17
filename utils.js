@@ -284,7 +284,7 @@ function showUserCartInternal(bot, message) {
 
 function clearUserCartInternal(bot, message) {
   removeUserInfoFromMongo(message.user, Consts.MONGODB_USER_CART_COL, function() {
-    bot.reply(message, "Your cart is not empty");
+    bot.reply(message, "Your cart is now empty");
   });
 }
 
