@@ -241,7 +241,7 @@ var utils = {
     Api.getProducts(function(data) {
       sendMultipleAttachmentsOneByOne(bot,
         message,
-        [buildProductsElements(getProductArrayByCategoryId(data))]);
+        [buildProductsElements(getProductArrayByCategoryId(data, category_id))]);
     });
   },
   getUserInfo: function(userId, callback) {
