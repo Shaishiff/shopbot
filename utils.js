@@ -277,7 +277,7 @@ function showUserCartInternal(bot, message) {
       for (var i = 0; i < userCart.products.length; i++) {
         var curProd = userCart.products[i];
         messageText += "\n" + (i+1) + ". " + curProd.prod_name + " for $" + curProd.prod_price;
-        totalPrice += curProd.prod_price;
+        totalPrice += parseFloat(curProd.prod_price);
       }
       messageText += "\nTotal price: $" + totalPrice;
       bot.reply(message, messageText);
