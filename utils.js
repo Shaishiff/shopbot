@@ -108,6 +108,7 @@ function buildCategoriesElements(api_data) {
   var elements = [];
   for (var i = 0; i < api_data.length; i++) {
     var curI = api_data[i];
+    var curElement {};
     curElement.title = curI.name;
     curElement.image_url = curI.image_url;
     curElement.subtitle = "" + curI.products.length + " products";
@@ -130,6 +131,7 @@ function buildProductsElements(api_data) {
   var elements = [];
   for (var i = 0; i < api_data.length; i++) {
     var curI = api_data[i];
+    var curElement = {};
     curElement.title = curI.name;
     curElement.image_url = curI.image_url;
     curElement.subtitle = "$" + curI.price;
