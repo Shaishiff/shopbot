@@ -208,7 +208,7 @@ function getUserInfoInternal(userId, callback) {
 function notSureWhatUserWantsInternal(bot, message) {
   console.log("No idea what the user wants...");
   bot.reply(message, Utils.randomFromArray(Sentences.bot_not_sure_what_user_means));
-  Utils.sendUserMsgToAnalytics("unknown_msgs", message.text);
+  sendToAnalyticsInternal("unknown_msgs", message.text, "incoming");
 }
 
 var utils = {
