@@ -273,10 +273,13 @@ function showUserCartInternal(bot, message) {
       bot.reply(message, "Your cart is empty");
     } else {
       var messageText = "You have " + userCart.products.length + " products in your cart";
+      var totalPrice = 0;
       for (var i = 0; i < userCart.products.length; i++) {
         var curProd = userCart.products[i];
-        messageText += "\n" + curProd.prod_name + " for $" + curProd.prod_price;
+        messageText += "\n" + (i+1) + ". " + curProd.prod_name + " for $" + curProd.prod_price;
+        totalPrice += curProd.prod_price;
       }
+      messageText += "\nTotal price: $" + totalPrice;
       bot.reply(message, messageText);
     }
   });

@@ -76,12 +76,12 @@ controller.hears(Sentences.user_wants_to_buy, 'message_received', function(bot, 
 });
 
 // User wants to show cart.
-controller.hears(["show cart"], 'message_received', function(bot, message) {
+controller.hears(["(.*)show(.*)cart"], 'message_received', function(bot, message) {
   Utils.showUserCart(bot, message);
 });
 
 // User wants to clear cart.
-controller.hears(["clear cart"], 'message_received', function(bot, message) {
+controller.hears(["(.*)clear(.*)cart"], 'message_received', function(bot, message) {
   Utils.clearUserCart(bot, message);
 });
 
