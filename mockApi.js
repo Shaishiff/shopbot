@@ -42,7 +42,7 @@ var products = [{
 		products: [{
 			id: 4,
 			name: "T-Shirt",
-			image_url: "https://upload.wikimedia.org/wikipedia/en/3/31/JoeyFox91_Men's_tshirt.png",
+			image_url: "http://pngimg.com/upload/tshirt_PNG5448.png",
 			price: 10,
 			url: "https://www.google.co.il/#q="
 		},
