@@ -235,7 +235,7 @@ function addToUserCartInternal(userId, prod_id, prod_name, prod_price, callback)
       prod_price: prod_price
     });
     removeUserInfoFromMongo(userId, Consts.MONGODB_USER_CART_COL, function() {
-      insertUserInfoToMongo(userId, Consts.MONGODB_USER_CART_COL, function() {
+      insertUserInfoToMongo(userCart, Consts.MONGODB_USER_CART_COL, function() {
         callback(userCart)
       });
     });
