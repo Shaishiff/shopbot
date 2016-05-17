@@ -93,7 +93,13 @@ controller.on('message_received', function(bot, message) {
 
 // Facebook postsbacks.
 controller.on('facebook_postback', function(bot, message) {
-  Utils.sendUserMsgToAnalytics(message.user, "facebook_postback-" + message.payload);
+  Utils.getUserInfo(message.user, function(userInfo) {
+    var fullNameWithId = message.user;
+    if (userInfo) {
+      fullNameWithId = userInfo.first_name + "_" + userInfo.last_name + "_" + message.user;
+    }
+    Utils.sendUserMsgToAnalytics(fullNameWithId, "facebook_postback-" + message.payload);
+  });
   if (message.payload.indexOf('show_prods_for_') === 0) {
     var category_id = message.payload.replace("show_prods_for_","");
     console.log("Post back for showing products for category " + category_id);
